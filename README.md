@@ -1,4 +1,4 @@
-# Ntamba Accounting System
+# Ntamba Accounts Plus
 
 An enterprise-grade accounting platform for **Ntamba Products**, built around an offline-first field sales capture and reconciliation workflow.
 
@@ -21,38 +21,39 @@ This system replaces unstructured WhatsApp reporting with a robust two-way platf
 
 ## 🛠 Technology Stack
 
+> Authoritative source: *Ntamba Sales and Accounts System Plan.md* (decision 9 & Technical design section). Stack pending final confirmation — see open questions.
+
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend Framework** | Next.js 14 (App Router) | React framework with Server Components and API routes. |
-| **Language** | TypeScript | Strict type safety across the entire stack. |
-| **Styling** | Tailwind CSS | Utility-first CSS for rapid, responsive UI development. |
-| **Backend / Database** | Supabase (PostgreSQL) | Managed Postgres with Row Level Security (RLS) and Auth. |
-| **State Management** | Zustand | Lightweight state management with `persist` middleware for offline queues. |
-| **Offline / PWA** | `@ducanh2912/next-pwa` | Service worker generation for offline caching and installability. |
-| **Icons** | Lucide React | Clean, consistent SVG iconography. |
+| **Backend framework** | Laravel (latest stable) | API + business rules, role permissions, audit log, idempotent sync endpoints. |
+| **Database** | PostgreSQL (or MySQL) | Relational store; company-scoped tables; JSON settings columns. |
+| **Frontend** | Vue 3 + Vite + PWA plugin | One code base, two faces: phone layout (agent app) and desktop layout (accountant console). |
+| **Offline storage (phone)** | IndexedDB + service worker | Local price list, client search, own stock/sales; write-ahead sync queue with unique IDs. |
+| **Realtime console** | Laravel Reverb (WebSocket) | Live board updates, 20-second polling fallback. |
+| **Hosting** | Single VPS (2 vCPU / 4 GB) | Daily DB backups (30 days), weekly off-server copy, staging copy for training. |
 
 ## 🏗 System Architecture
 
 ```text
-[ Agent Phone (PWA) ] <--(Offline Queue)--> [ Next.js API (/api/sync) ]
-                                                    |
-                                                    v
-[ Accountant PC (Web) ] <----(Realtime)----> [ Supabase PostgreSQL ]
-                                                    |
-                                      (Triggers: Credit Ledger, 
-                                       Inventory Movements, Audit Log)
+[ Agent Phone (Vue 3 PWA) ] --(IndexedDB queue, idempotent sync by phone-made UUID)--> [ Laravel API ]
+              |                                                                                |
+   (service worker + Add to Home Screen)                                            [ PostgreSQL (company-scoped) ]
+              |                                                                                |
+[ Accountant Console (desktop layout) ] <--(Laravel Reverb WebSocket / 20s polling)-----------+
+                          (audit log, alerts, stock movements, Phase-2 ledger postings)
 ```
 
 ## 🗺 Roadmap
 
-The accounting system will be built incrementally in this repository:
+The build follows the plan document's phases, each ending in a sign-off gate:
 
-1. **Project foundation** - scaffold the Next.js 14 + TypeScript application with Tailwind CSS and Supabase client wiring.
-2. **Database schema & auth** - Postgres tables (products, clients, agents, visits, transactions, credit ledger, inventory movements, audit log) with Row Level Security.
-3. **Agent PWA** - offline-first sales capture with sync queue.
-4. **Accountant dashboard** - reconciliation, financial ledger, credit/debt management, inventory.
-5. **Reporting & exports** - CSV/Excel exports, aging analysis, audit trail views.
+- **Phase 0 – Preparation:** answer open questions, phone mock-ups of sale flow / stock confirm / day close, Phase 1 DB design, test-case checklist from the workbook, hosting/domain decisions.
+- **Phase 1 – Sales & stock (M1–M9):** foundation (auth, roles, companies, products, prices, routes, audit log) → stock engine (trips, issue/confirm/lock, movements) → clients (search, duplicate check, merge) → sales capture → offline & sync → evidence, payments, debtors → day close & handover → console, targets, alerts, reports → pilot (Gloria/Kampala, 10 parallel days) then go-live.
+- **Phase 2 – Finance & ledger:** chart of accounts + posting engine, expenses/income, service providers, cash book, costing (recipes/batches/unit cost), financial reports.
+- **Phase 3 – Imports & messaging:** import wizard, Zoho Books/Inventory/CRM + piclesale.com connections, SMS/WhatsApp reminders, statement matching, second workspace.
+
+Gate for Phase 1: ten working days of parallel running where the system matches the workbook to the shilling.
 
 ## 🤝 Contributing
 
-All development for the Ntamba Accounting System is pushed to this repository. Keep commits focused, and update this README as the architecture evolves.
+All development for the Ntamba Accounts Plus is pushed to this repository. Keep commits focused, and update this README as the architecture evolves.
