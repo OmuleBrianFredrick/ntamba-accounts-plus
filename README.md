@@ -1,8 +1,8 @@
-# Ntamba Sales Management System
+# Ntamba Accounting System
 
-An enterprise-grade, offline-first field sales capture and reconciliation system designed specifically for **Ntamba Products**. 
+An enterprise-grade accounting platform for **Ntamba Products**, built around an offline-first field sales capture and reconciliation workflow.
 
-This system replaces unstructured WhatsApp reporting with a robust two-way platform: field agents use an installable Progressive Web App (PWA) to capture sales, debt clearances, and product exchanges in real-time (even without internet), while accountants use a centralized web dashboard to review, reconcile, and manage credit and inventory.
+This system replaces unstructured WhatsApp reporting with a robust two-way platform: field agents use an installable Progressive Web App (PWA) to capture sales, debt clearances, and product exchanges in real-time (even without internet), while accountants use a centralized web dashboard to review, reconcile, and manage the books — including the financial ledger, credit/debt management, and inventory movements.
 
 ## 🌟 Core Capabilities
 
@@ -41,3 +41,18 @@ This system replaces unstructured WhatsApp reporting with a robust two-way platf
                                                     |
                                       (Triggers: Credit Ledger, 
                                        Inventory Movements, Audit Log)
+```
+
+## 🗺 Roadmap
+
+The accounting system will be built incrementally in this repository:
+
+1. **Project foundation** - scaffold the Next.js 14 + TypeScript application with Tailwind CSS and Supabase client wiring.
+2. **Database schema & auth** - Postgres tables (products, clients, agents, visits, transactions, credit ledger, inventory movements, audit log) with Row Level Security.
+3. **Agent PWA** - offline-first sales capture with sync queue.
+4. **Accountant dashboard** - reconciliation, financial ledger, credit/debt management, inventory.
+5. **Reporting & exports** - CSV/Excel exports, aging analysis, audit trail views.
+
+## 🤝 Contributing
+
+All development for the Ntamba Accounting System is pushed to this repository. Keep commits focused, and update this README as the architecture evolves.
